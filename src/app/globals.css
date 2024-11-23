@@ -2,22 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+main {
+  background-image: url("/auction_bg.jpg");
+  background-repeat: no-repeat;
+  background-size: cover; /* Ensures the image covers the whole area */
+  background-position: center; /* Centers the image */
+  height: 100lvh;
 }
 
 @layer utilities {
