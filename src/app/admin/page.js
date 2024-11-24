@@ -80,36 +80,34 @@ export default function AdminPage() {
 
   return (
     <div className="container mx-auto p-9">
-      <div className="h-screen w-full flex flex-col items-center gap-14">
-        <div className=" h-[50vh] min-h-[450px] w-[1000px] bg-blue-950 rounded-lg flex gap-5 p-10  ">
+      <div className=" w-full flex flex-col items-center gap-14">
+        <div className="min-h-[450px] max-w-[100%] md:max-w-[1000px] bg-blue-950 rounded-lg flex flex-col md:flex-row gap-3 md:gap-5 p-5 md:p-10">
           <div className="flex-[2] relative">
             <Image
-              className="h-full w-full max-h-full max-w-[300px] object-cover rounded-lg border-4 shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]"
+              className="h-full w-full max-h-full max-w-[100%] md:max-w-[300px] object-cover rounded-lg border-4 shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]"
               src={player?.image}
               width={350}
               height={500}
             />
             {player?.isSold ? (
               <Image
-                className="absolute  bottom-0 left-0 tran transform"
+                className="absolute bottom-0 left-0 transform"
                 src={"/sold-out.png"}
                 width={320}
                 height={320}
               />
-            ) : (
-              <></>
-            )}
+            ) : null}
           </div>
-          <div className="flex-[3] flex flex-col justify-between ">
+          <div className="flex-[3] flex flex-col justify-between">
             <div>
-              <h2 className="text-6xl text-center text-white ">
+              <h2 className="text-4xl md:text-6xl text-center md:text-left text-white">
                 {player?.name ?? "---"}
               </h2>
-              <h5 className="mt-2 text-2xl text-center text-white">
+              <h5 className="mt-2 text-xl md:text-2xl text-center md:text-left text-white">
                 {player?.type ?? "---"}
               </h5>
             </div>
-            <div className="text-3xl">
+            <div className="text-xl md:text-3xl">
               <div className="border-b-2 flex items-center gap-3 py-3">
                 <h3 className="text-yellow-400">CATEGORY :</h3>
                 <h3 className="text-white">{player?.category ?? "---"}</h3>

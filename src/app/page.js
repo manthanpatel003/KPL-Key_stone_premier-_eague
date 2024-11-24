@@ -2,11 +2,12 @@
 import axios from "axios";
 import { Poppins } from "next/font/google";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Confetti from "react-confetti";
 
 const poppins = Poppins({
-  weight: ["400", "700"], // Specify weights if needed
-  subsets: ["latin"], // Specify subsets
+  weight: ["400", "700"],
+  subsets: ["latin"],
 });
 
 export default function Home() {
@@ -20,11 +21,23 @@ export default function Home() {
     }
   };
 
+  const intervalRef = useRef(null);
+
   useEffect(() => {
-    setInterval(() => {
+    intervalRef.current = setInterval(() => {
       fetchPlayer();
     }, 2000);
+
+    // Cleanup the interval on unmount
+    return () => clearInterval(intervalRef.current);
   }, []);
+
+  useEffect(() => {
+    if (player !== null && player?.success && !player?.player) {
+      // Stop the interval
+      clearInterval(intervalRef.current);
+    }
+  }, [player]);
 
   const [isWeb, setIsWeb] = useState(true);
 
@@ -54,7 +67,7 @@ export default function Home() {
       <main
         className={`flex items-center justify-center min-h-screen  ${poppins.className}`}
       >
-        {" "}
+        <Confetti width={window.innerWidth} height={window.innerHeight} />{" "}
         <Image
           className="absolute bottom-3"
           src={"/kpl_logo.png"}
@@ -67,16 +80,18 @@ export default function Home() {
       </main>
     );
   }
+
   return (
     <main>
       <Image
-        className="absolute bottom-3"
+        className="absolute bottom-3 left-0"
         src={"/kpl_logo.png"}
-        width={300}
-        height={300}
+        width={250}
+        height={250}
       />
+      <Bars />
 
-      <div className="absolute bottom-52 left-1/2 transform -translate-x-1/2 h-[50vh] w-[1000px] bg-blue-950 rounded-lg flex gap-5 p-10  ">
+      <div className="shadow-[rgba(0,_0,_0,_0.5)_0px_0px_70px_2px] border-4 border-yellow-500 z-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  h-[45vh] w-[1000px] bg-blue-950 rounded-lg flex gap-5 p-10  ">
         <div className="flex-[2] relative">
           <Image
             className="h-full w-full max-h-full max-w-[300px] object-cover rounded-lg border-4 shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]"
@@ -126,6 +141,70 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <Bars position="right" />
     </main>
   );
 }
+
+const Bars = ({ position = "left" }) => {
+  const [colors, setColors] = useState([
+    "yellow", // 1st bar
+    "orange", // 2nd bar
+    "yellow", // 3rd bar
+    "orange", // 4th bar
+  ]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setColors((prevColors) =>
+        prevColors.map((color) => (color === "yellow" ? "orange" : "yellow"))
+      );
+    }, 1000); // Change color every second
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
+
+  // Determine the position class based on the `position` prop
+
+  return (
+    <>
+      <div
+        className={`absolute bottom-1/2 transform translate-y-1/2 ${
+          position === "left" ? "-left-[2%]" : "-right-[2%]"
+        } h-[10vh] w-16 rounded-md ${
+          colors[0] === "yellow"
+            ? "bg-yellow-400 shadow-[0_0_15px_5px_rgba(252,211,77,0.6)]"
+            : "bg-orange-400 shadow-[0_0_15px_5px_rgba(251,146,60,0.6)]"
+        }`}
+      />
+      <div
+        className={`absolute bottom-1/2 transform translate-y-1/2 ${
+          position === "left" ? "left-[4%]" : "right-[4%]"
+        } h-[20vh] w-16 rounded-md ${
+          colors[1] === "yellow"
+            ? "bg-yellow-400 shadow-[0_0_15px_5px_rgba(252,211,77,0.6)]"
+            : "bg-orange-400 shadow-[0_0_15px_5px_rgba(251,146,60,0.6)]"
+        }`}
+      />
+      <div
+        className={`absolute bottom-1/2 transform translate-y-1/2 ${
+          position === "left" ? "left-[10%]" : "right-[10%]"
+        } h-[30vh] w-16 rounded-md ${
+          colors[2] === "yellow"
+            ? "bg-yellow-400 shadow-[0_0_15px_5px_rgba(252,211,77,0.6)]"
+            : "bg-orange-400 shadow-[0_0_15px_5px_rgba(251,146,60,0.6)]"
+        }`}
+      />
+      <div
+        className={`absolute bottom-1/2 transform translate-y-1/2 ${
+          position === "left" ? "left-[16%]" : "right-[16%]"
+        } h-[40vh] w-16 rounded-md ${
+          colors[3] === "yellow"
+            ? "bg-yellow-400 shadow-[0_0_15px_5px_rgba(252,211,77,0.6)]"
+            : "bg-orange-400 shadow-[0_0_15px_5px_rgba(251,146,60,0.6)]"
+        }`}
+      />
+    </>
+  );
+};
