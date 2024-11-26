@@ -3,6 +3,14 @@ import mongoose from "mongoose";
 const PlayerSchema = new mongoose.Schema({
   name: { type: String, required: true },
   type: { type: String, required: true },
+  battingStyle: { type: String, required: true },
+  bowlingStyle: { type: String, required: true },
+  playerType: {
+    type: String,
+    enum: ["male", "female", "faculty"],
+    required: true,
+    default: "male",
+  },
   category: { type: String, required: true },
   image: { type: String, required: true },
   currentPrice: { type: Number, required: true },

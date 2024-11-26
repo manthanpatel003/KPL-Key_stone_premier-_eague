@@ -4,16 +4,18 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-export default function AdminPage() {
+export default function AdminPage({ playerType }) {
   const [player, setPlayer] = useState(null); // Store player details
   const [selectedTeam, setSelectedTeam] = useState(""); // Track selected team
   const [count, setCount] = useState(1);
   console.log(count);
 
+  if (!playerType) return <>Loading...</>;
+
   // Fetch a player with no teamName on component load
   const fetchPlayer = async () => {
     try {
-      const response = await axios.get("/api/players");
+      const response = await axios.get("/api/players/" + playerType);
       console.log({ response });
       setPlayer(response.data?.player);
       setCount(1);

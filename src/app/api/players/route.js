@@ -1,6 +1,6 @@
-import { connectToDatabase } from "@/lib/mongodb";
-import Player from "@/models/Player";
 import { NextResponse } from "next/server";
+import { connectToDatabase } from "../../../lib/mongodb";
+import Player from "../../../models/Player";
 
 // POST API to add player (without file upload)
 export async function POST(req) {
@@ -10,8 +10,17 @@ export async function POST(req) {
     // Manually parsing the incoming request body
     const formData = await req.json();
 
-    const { name, currentPrice, basePrice, imageName, category, type } =
-      formData;
+    const {
+      name,
+      type,
+      currentPrice,
+      basePrice,
+      imageName,
+      category,
+      battingStyle,
+      bowlingStyle,
+      playerType,
+    } = formData;
 
     // Validate the required fields
     if (
@@ -20,7 +29,10 @@ export async function POST(req) {
       !basePrice ||
       !imageName ||
       !category ||
-      !type
+      !type ||
+      !battingStyle ||
+      !bowlingStyle ||
+      !playerType
     ) {
       return NextResponse.json(
         { message: "Missing required fields" },
@@ -29,16 +41,6 @@ export async function POST(req) {
     }
 
     const imagePath = `/players-image/${imageName}`;
-    console.log({
-      name,
-      category,
-      type,
-      image: imagePath,
-      currentPrice: parseInt(currentPrice),
-      basePrice: parseInt(basePrice),
-      isSold: false,
-      teamName: null,
-    });
 
     // Create and save a new player
     const newPlayer = new Player({
