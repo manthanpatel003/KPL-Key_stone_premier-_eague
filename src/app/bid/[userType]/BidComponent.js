@@ -2,6 +2,7 @@
 import axios from "axios";
 import { Poppins } from "next/font/google";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
 
@@ -80,7 +81,7 @@ export default function BidComponent({ playerType }) {
   if (player !== null && player?.success && !player?.player) {
     return (
       <main
-        className={`flex items-center justify-center min-h-screen  ${poppins.className}`}
+        className={` flex items-center justify-center min-h-screen  ${poppins.className}`}
       >
         <Confetti width={window.innerWidth} height={window.innerHeight} />{" "}
         <Image
@@ -89,8 +90,18 @@ export default function BidComponent({ playerType }) {
           width={300}
           height={300}
         />
-        <h1 className="bg-blue-950 text-9xl font-extrabold text-yellow-500 p-12 rounded-xl shadow-[rgba(0,_0,_0,_0.4)_50px_50px_40px_-2px] border-1 border-2 border-yellow-500">
-          All Players Sold
+        <h1 className="bg-blue-950 text-9xl font-extrabold text-yellow-500 p-12 rounded-xl shadow-[rgba(0,_0,_0,_0.4)_50px_50px_40px_-2px] border-1 border-2 border-yellow-500 relative">
+          All Players{playerType && `(${playerType})`} Sold
+          <div className="absolute right-4 bottom-2 text-lg">
+            {playerType === "faculty" && (
+              <Link href={"/bid/male"}>Move to Next Bidding(Male Players)</Link>
+            )}
+            {playerType === "male" && (
+              <Link href={"/bid/female"}>
+                Move to Next Bidding(Female Players)
+              </Link>
+            )}
+          </div>
         </h1>
       </main>
     );
@@ -104,67 +115,76 @@ export default function BidComponent({ playerType }) {
         width={250}
         height={250}
       />
-      <Bars />
+      {player && (
+        <>
+          <Bars />
 
-      <div className="shadow-[rgba(0,_0,_0,_0.5)_0px_0px_70px_2px] border-4 border-yellow-500 z-50 absolute top-[calc(50%+50px)] left-1/2 transform -translate-x-1/2 -translate-y-1/2  h-[45vh] w-[1000px] bg-blue-950 rounded-lg flex gap-5 p-10  ">
-        <div className="flex-[2] relative">
-          <Image
-            className="h-full w-full max-h-full max-w-[300px] object-cover rounded-lg border-4 shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]"
-            src={player?.player?.image}
-            width={350}
-            height={500}
-          />
-          {player?.player?.isSold ? (
-            <Image
-              className="absolute  bottom-0 left-0 tran transform"
-              src={"/sold-out.png"}
-              width={320}
-              height={320}
-            />
-          ) : (
-            <></>
-          )}
-        </div>
-        <div className="flex-[3] flex flex-col justify-between ">
-          <div>
-            <h2 className="text-6xl text-center text-white mb-1 ">
-              {player?.player?.name ?? "---"}
-            </h2>
-            <hr />
-            <h5 className="mt-2 text-2xl text-center text-white">
-              {player?.player?.type ?? "---"}
-            </h5>
-            <h5 className="mt-2 text-2xl text-center text-white">
-              Batting style : {player?.player?.battingStyle ?? "---"}
-            </h5>
-            <h5 className="mt-2 text-2xl text-center text-white">
-              Bowling style : {player?.player?.bowlingStyle ?? "---"}
-            </h5>
+          <div className="shadow-[rgba(0,_0,_0,_0.5)_0px_0px_70px_2px] border-4 border-yellow-500 z-50 absolute top-[calc(50%+50px)] left-1/2 transform -translate-x-1/2 -translate-y-1/2   w-[1000px] bg-blue-950 rounded-lg flex gap-5 p-10  ">
+            <div className="flex-[2] relative">
+              <Image
+                className="h-full w-full max-h-full max-w-[300px] object-cover rounded-lg border-4 shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]"
+                src={player?.player?.image}
+                width={350}
+                height={500}
+              />
+              {player?.player?.isSold ? (
+                <Image
+                  className="absolute  bottom-0 left-0 tran transform"
+                  src={"/sold-out.png"}
+                  width={320}
+                  height={320}
+                />
+              ) : (
+                <></>
+              )}
+            </div>
+            <div className="flex-[3] flex flex-col justify-between ">
+              <div>
+                <h2 className="text-5xl text-center text-white mb-1 ">
+                  {player?.player?.name ?? "---"}
+                </h2>
+                <hr />
+                <h5 className="mt-2 text-2xl text-center text-white">
+                  {player?.player?.type ?? "---"}
+                </h5>
+              </div>
+              <div className="text-2xl">
+                <div className="border-b-2 flex items-center gap-3 py-2">
+                  <h3 className="text-yellow-400">BATTING STYLE :</h3>
+                  <h3 className="text-white">
+                    {player?.player?.battingStyle ?? "---"}
+                  </h3>
+                </div>
+                <div className="border-b-2 flex items-center gap-3 py-2">
+                  <h3 className="text-yellow-400">BOWLING STYLE :</h3>
+                  <h3 className="text-white">
+                    {player?.player?.bowlingStyle ?? "---"}
+                  </h3>
+                </div>
+                <div className="border-b-2 flex items-center gap-3 py-2">
+                  <h3 className="text-yellow-400">CATEGORY :</h3>
+                  <h3 className="text-white">
+                    {player?.player?.category ?? "---"}
+                  </h3>
+                </div>
+                <div className="border-b-2 flex items-center gap-3 py-2">
+                  <h3 className="text-yellow-400">BASE PRICE :</h3>
+                  <h3 className="text-white">
+                    {player?.player?.basePrice ?? "---"}
+                  </h3>
+                </div>
+                <div className="border-b-2 flex items-center gap-3 py-2">
+                  <h3 className="text-yellow-400">CURRENT PRICE:</h3>
+                  <h3 className="text-white">
+                    {player?.player?.currentPrice ?? "---"}
+                  </h3>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="text-2xl">
-            <div className="border-b-2 flex items-center gap-3 py-2">
-              <h3 className="text-yellow-400">CATEGORY :</h3>
-              <h3 className="text-white">
-                {player?.player?.category ?? "---"}
-              </h3>
-            </div>
-            <div className="border-b-2 flex items-center gap-3 py-2">
-              <h3 className="text-yellow-400">BASE PRICE :</h3>
-              <h3 className="text-white">
-                {player?.player?.basePrice ?? "---"}
-              </h3>
-            </div>
-            <div className="border-b-2 flex items-center gap-3 py-2">
-              <h3 className="text-yellow-400">CURRENT PRICE:</h3>
-              <h3 className="text-white">
-                {player?.player?.currentPrice ?? "---"}
-              </h3>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <Bars position="right" />
+          <Bars position="right" />
+        </>
+      )}
     </main>
   );
 }

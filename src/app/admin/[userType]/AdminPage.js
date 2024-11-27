@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -19,6 +20,7 @@ export default function AdminPage({ playerType }) {
       console.log({ response });
       setPlayer(response.data?.player);
       setCount(1);
+      setSelectedTeam("");
     } catch (error) {
       console.error("Error fetching player:", error.response?.data || error);
     }
@@ -81,9 +83,23 @@ export default function AdminPage({ playerType }) {
   console.log(player);
 
   return (
-    <div className="container mx-auto p-9">
+    <div className="container mx-auto p-9 !overflow-auto">
       <div className=" w-full flex flex-col items-center gap-14">
-        <div className="min-h-[450px] max-w-[100%] md:max-w-[1000px] bg-blue-950 rounded-lg flex flex-col md:flex-row gap-3 md:gap-5 p-5 md:p-10">
+        {!player && (
+          <div className="text-xl text-yellow-500 font-extrabold">
+            {playerType === "faculty" && (
+              <Link href={"/admin/male"}>
+                Move to Next Bidding(Male Players)
+              </Link>
+            )}
+            {playerType === "male" && (
+              <Link href={"/admin/female"}>
+                Move to Next Bidding(Female Players)
+              </Link>
+            )}
+          </div>
+        )}
+        {/* <div className="min-h-[450px] max-w-[100%] md:max-w-[1000px] bg-blue-950 rounded-lg flex flex-col md:flex-row gap-3 md:gap-5 p-5 md:p-10">
           <div className="flex-[2] relative">
             <Image
               className="h-full w-full max-h-full max-w-[100%] md:max-w-[300px] object-cover rounded-lg border-4 shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]"
@@ -124,56 +140,141 @@ export default function AdminPage({ playerType }) {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
+        {player ? (
+          <>
+            <div className="shadow-[rgba(0,_0,_0,_0.5)_0px_0px_70px_2px] border-4 border-yellow-500 z-50    w-[1000px] bg-blue-950 rounded-lg flex gap-5 p-10  ">
+              <div className="flex-[2] relative">
+                <Image
+                  className="h-full w-full max-h-full max-w-[300px] object-cover rounded-lg border-4 shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]"
+                  src={player?.image}
+                  width={350}
+                  height={500}
+                />
+                {player?.isSold ? (
+                  <Image
+                    className="absolute  bottom-0 left-0 tran transform"
+                    src={"/sold-out.png"}
+                    width={320}
+                    height={320}
+                  />
+                ) : (
+                  <></>
+                )}
+              </div>
+              <div className="flex-[3] flex flex-col justify-between ">
+                <div>
+                  <h2 className="text-6xl text-center text-white mb-1 ">
+                    {player?.name ?? "---"}
+                  </h2>
+                  <hr />
+                  <h5 className="mt-2 text-2xl text-center text-white">
+                    {player?.type ?? "---"}
+                  </h5>
+                  <h5 className="mt-2 text-2xl text-center text-white">
+                    Batting style : {player?.battingStyle ?? "---"}
+                  </h5>
+                  <h5 className="mt-2 text-2xl text-center text-white">
+                    Bowling style : {player?.bowlingStyle ?? "---"}
+                  </h5>
+                </div>
+                <div className="text-2xl">
+                  <div className="border-b-2 flex items-center gap-3 py-2">
+                    <h3 className="text-yellow-400">CATEGORY :</h3>
+                    <h3 className="text-white">{player?.category ?? "---"}</h3>
+                  </div>
+                  <div className="border-b-2 flex items-center gap-3 py-2">
+                    <h3 className="text-yellow-400">BASE PRICE :</h3>
+                    <h3 className="text-white">{player?.basePrice ?? "---"}</h3>
+                  </div>
+                  <div className="border-b-2 flex items-center gap-3 py-2">
+                    <h3 className="text-yellow-400">CURRENT PRICE:</h3>
+                    <h3 className="text-white">
+                      {player?.currentPrice ?? "---"}
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Actions */}
+            <div className="flex flex-col gap-3 justify-center items-center">
+              <button
+                onClick={handleIncreaseBid}
+                type="button"
+                className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+                disabled={!player?._id || player?.isSold}
+              >
+                + Increase Bid
+              </button>
+              <button
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      "Are you sure you want to mark this item as sold?"
+                    )
+                  ) {
+                    handleMarkSold();
+                  }
+                }}
+                type="button"
+                className="text-white bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+                disabled={!player?._id || player?.isSold}
+              >
+                Sold Out
+              </button>
 
-        {/* Actions */}
-        <div>
-          <button
-            onClick={handleIncreaseBid}
-            type="button"
-            className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
-          >
-            + Increase Bid
-          </button>
-          <button
-            onClick={handleMarkSold}
-            type="button"
-            className="text-white bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
-          >
-            Sold Out
-          </button>
-
-          {/* Select Team */}
-          <form className="max-w-sm mx-auto">
-            <label
-              htmlFor="team"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Select Team
-            </label>
-            <select
-              id="team"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              value={selectedTeam}
-              onChange={(e) => setSelectedTeam(e.target.value)}
-            >
-              <option value="" disabled>
-                Choose a team
-              </option>
-              <option value="CSK">CSK</option>
-              <option value="MI">MI</option>
-              <option value="GT">GT</option>
-              <option value="RCB">RCB</option>
-            </select>
-          </form>
-          <button
-            onClick={handleSetTeam}
-            type="button"
-            className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 w-full mt-2"
-          >
-            Sell
-          </button>
-        </div>
+              {/* Select Team */}
+              <div className="flex gap-20 items-center justify-center">
+                <form className="max-w-sm mx-auto w-[600px]">
+                  <label
+                    htmlFor="team"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Select Team
+                  </label>
+                  <select
+                    id="team"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    value={selectedTeam}
+                    onChange={(e) => setSelectedTeam(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Choose a team
+                    </option>
+                    <option value="ASSET EMPERORS">ASSET EMPERORS</option>
+                    <option value="OC TITANS">OC TITANS</option>
+                    <option value="GST GLADIOTERS">GST GLADIOTERS</option>
+                    <option value="LIBERAL LIONS">LIBERAL LIONS</option>
+                    <option value="TRADE TITANS">TRADE TITANS</option>
+                    <option value="INFLATION INVINCIBLES">
+                      INFLATION INVINCIBLES
+                    </option>
+                    <option value="MANAGEMENT MASTERS">
+                      MANAGEMENT MASTERS
+                    </option>
+                    <option value="IC CHAMPIONS">IC CHAMPIONS</option>
+                    <option value="RECESSION RAIDERS">RECESSION RAIDERS</option>
+                    <option value="MAVERICKS">MAVERICKS</option>
+                    <option value="TRESURY TACTICIANS">
+                      TRESURY TACTICIANS
+                    </option>
+                    <option value="STOCK STRIKERS">STOCK STRIKERS</option>
+                  </select>
+                </form>
+                <button
+                  disabled={!player?._id || !player?.isSold}
+                  onClick={handleSetTeam}
+                  type="button"
+                  className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 w-full mt-8"
+                >
+                  Sell
+                </button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <h2 className="text-xl">All Players are sold.</h2>
+        )}
       </div>
     </div>
   );

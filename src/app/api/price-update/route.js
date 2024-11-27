@@ -1,6 +1,6 @@
-import { connectToDatabase } from "@/lib/mongodb";
-import Player from "@/models/Player";
 import { NextResponse } from "next/server";
+import { connectToDatabase } from "../../../lib/mongodb";
+import Player from "../../../models/Player";
 
 // PUT API to update the current price for a player
 export async function PUT(req) {
@@ -26,6 +26,7 @@ export async function PUT(req) {
       player,
     });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { success: false, message: "Error updating price", error: error.message },
       { status: 500 }
