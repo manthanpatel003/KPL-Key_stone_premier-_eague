@@ -103,7 +103,7 @@ export default function AdminPage({ playerType }) {
           <div className="flex-[2] relative">
             <Image
               className="h-full w-full max-h-full max-w-[100%] md:max-w-[300px] object-cover rounded-lg border-4 shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]"
-              src={player?.image}
+              src={player?.image ?? "/players-image/no_user.jpg"}
               width={350}
               height={500}
             />
@@ -147,7 +147,7 @@ export default function AdminPage({ playerType }) {
               <div className="flex-[2] relative">
                 <Image
                   className="h-full w-full max-h-full max-w-[300px] object-cover rounded-lg border-4 shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]"
-                  src={player?.image}
+                  src={player?.image ?? "/players-image/no_user.jpg"}
                   width={350}
                   height={500}
                 />
