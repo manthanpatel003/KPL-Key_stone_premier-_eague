@@ -1,15 +1,15 @@
-'use client';
-import axios from 'axios';
-import { Poppins } from 'next/font/google';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-import Confetti from 'react-confetti';
-import { categoryOrder } from '../../../lib/helper';
+"use client";
+import axios from "axios";
+import { Poppins } from "next/font/google";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import Confetti from "react-confetti";
+import { categoryOrder } from "../../../lib/helper";
 
 const poppins = Poppins({
-  weight: ['400', '700'],
-  subsets: ['latin'],
+  weight: ["400", "700"],
+  subsets: ["latin"],
 });
 
 export default function BidComponent({ category }) {
@@ -21,11 +21,11 @@ export default function BidComponent({ category }) {
   const fetchPlayer = async () => {
     try {
       const response = await axios.get(
-        '/api/players/' + String(category).toLowerCase(),
+        "/api/players/" + String(category).toLowerCase()
       );
       setPlayer(response.data);
     } catch (error) {
-      console.error('Error fetching player:', error.response?.data || error);
+      console.error("Error fetching player:", error.response?.data || error);
     }
   };
 
@@ -42,12 +42,12 @@ export default function BidComponent({ category }) {
     intervalRef.current = setInterval(fetchPlayer, 2000);
 
     // Add event listener for page visibility changes
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // Cleanup on unmount
     return () => {
       clearInterval(intervalRef.current);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
   useEffect(() => {
@@ -68,11 +68,11 @@ export default function BidComponent({ category }) {
     handleResize();
 
     // Add event listener on mount
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     // Cleanup event listener on unmount
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -85,10 +85,10 @@ export default function BidComponent({ category }) {
       <main
         className={` flex items-center justify-center min-h-screen  ${poppins.className}`}
       >
-        <Confetti width={window.innerWidth} height={window.innerHeight} />{' '}
+        <Confetti width={window.innerWidth} height={window.innerHeight} />{" "}
         <Image
           className="absolute bottom-3"
-          src={'/kpl_logo.png'}
+          src={"/kpl_logo.png"}
           width={300}
           height={300}
         />
@@ -112,7 +112,7 @@ export default function BidComponent({ category }) {
     <main>
       <Image
         className="absolute bottom-3 left-0"
-        src={'/kpl_logo.png'}
+        src={"/kpl_logo.png"}
         width={250}
         height={250}
       />
@@ -124,14 +124,14 @@ export default function BidComponent({ category }) {
             <div className="flex-[2] relative">
               <Image
                 className="h-full w-full max-h-full max-w-[300px] object-cover rounded-lg border-4 shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]"
-                src={player?.player?.image ?? '/players-image/no_user.jpg'}
+                src={player?.player?.image ?? "/players-image/no_user.jpg"}
                 width={350}
                 height={500}
               />
               {player?.player?.isSold ? (
                 <Image
                   className="absolute  bottom-0 left-0 tran transform"
-                  src={'/sold-out.png'}
+                  src={"/sold-out.png"}
                   width={320}
                   height={320}
                 />
@@ -142,42 +142,46 @@ export default function BidComponent({ category }) {
             <div className="flex-[3] flex flex-col justify-between ">
               <div>
                 <h2 className="text-5xl text-center text-white mb-1 ">
-                  {player?.player?.name ?? '---'}
+                  {player?.player?.name ?? "---"}
                 </h2>
                 <hr />
                 <h5 className="mt-2 text-2xl text-center text-white">
-                  {player?.player?.type ?? '---'}
+                  {player?.player?.type ?? "---"}
                 </h5>
               </div>
               <div className="text-2xl">
                 <div className="border-b-2 flex items-center gap-3 py-2">
                   <h3 className="text-yellow-400">BATTING STYLE :</h3>
                   <h3 className="text-white">
-                    {player?.player?.battingStyle ?? '---'}
+                    {player?.player?.battingStyle ?? "---"}
                   </h3>
                 </div>
                 <div className="border-b-2 flex items-center gap-3 py-2">
                   <h3 className="text-yellow-400">BOWLING STYLE :</h3>
                   <h3 className="text-white">
-                    {player?.player?.bowlingStyle ?? '---'}
+                    {player?.player?.bowlingStyle ?? "---"}
                   </h3>
                 </div>
                 <div className="border-b-2 flex items-center gap-3 py-2">
                   <h3 className="text-yellow-400">CATEGORY :</h3>
                   <h3 className="text-white">
-                    {player?.player?.category ?? '---'}
+                    {player?.player?.category ?? "---"}
                   </h3>
                 </div>
                 <div className="border-b-2 flex items-center gap-3 py-2">
                   <h3 className="text-yellow-400">BASE PRICE :</h3>
                   <h3 className="text-white">
-                    {player?.player?.basePrice ?? '---'}
+                    {player?.player?.basePrice
+                      ? player?.player?.basePrice + "/-"
+                      : "---"}
                   </h3>
                 </div>
                 <div className="border-b-2 flex items-center gap-3 py-2">
                   <h3 className="text-yellow-400">CURRENT PRICE:</h3>
                   <h3 className="text-white">
-                    {player?.player?.currentPrice ?? '---'}
+                    {player?.player?.currentPrice
+                      ? player?.player?.currentPrice + "/-"
+                      : "---"}
                   </h3>
                 </div>
               </div>
@@ -189,18 +193,18 @@ export default function BidComponent({ category }) {
     </main>
   );
 }
-const Bars = ({ position = 'left' }) => {
+const Bars = ({ position = "left" }) => {
   const [colors, setColors] = useState([
-    'yellow', // 1st bar
-    'orange', // 2nd bar
-    'yellow', // 3rd bar
-    'orange', // 4th bar
+    "yellow", // 1st bar
+    "orange", // 2nd bar
+    "yellow", // 3rd bar
+    "orange", // 4th bar
   ]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setColors(prevColors =>
-        prevColors.map(color => (color === 'yellow' ? 'orange' : 'yellow')),
+      setColors((prevColors) =>
+        prevColors.map((color) => (color === "yellow" ? "orange" : "yellow"))
       );
     }, 1000); // Change color every second
 
@@ -213,38 +217,38 @@ const Bars = ({ position = 'left' }) => {
     <>
       <div
         className={`absolute bottom-[calc(50%-50px)] transform translate-y-1/2 ${
-          position === 'left' ? '-left-[2%]' : '-right-[2%]'
+          position === "left" ? "-left-[2%]" : "-right-[2%]"
         } h-[10vh] w-16 rounded-md ${
-          colors[0] === 'yellow'
-            ? 'bg-yellow-400 shadow-[0_0_15px_5px_rgba(252,211,77,0.6)]'
-            : 'bg-orange-400 shadow-[0_0_15px_5px_rgba(251,146,60,0.6)]'
+          colors[0] === "yellow"
+            ? "bg-yellow-400 shadow-[0_0_15px_5px_rgba(252,211,77,0.6)]"
+            : "bg-orange-400 shadow-[0_0_15px_5px_rgba(251,146,60,0.6)]"
         }`}
       />
       <div
         className={`absolute bottom-[calc(50%-50px)] transform translate-y-1/2 ${
-          position === 'left' ? 'left-[4%]' : 'right-[4%]'
+          position === "left" ? "left-[4%]" : "right-[4%]"
         } h-[20vh] w-16 rounded-md ${
-          colors[1] === 'yellow'
-            ? 'bg-yellow-400 shadow-[0_0_15px_5px_rgba(252,211,77,0.6)]'
-            : 'bg-orange-400 shadow-[0_0_15px_5px_rgba(251,146,60,0.6)]'
+          colors[1] === "yellow"
+            ? "bg-yellow-400 shadow-[0_0_15px_5px_rgba(252,211,77,0.6)]"
+            : "bg-orange-400 shadow-[0_0_15px_5px_rgba(251,146,60,0.6)]"
         }`}
       />
       <div
         className={`absolute bottom-[calc(50%-50px)] transform translate-y-1/2 ${
-          position === 'left' ? 'left-[10%]' : 'right-[10%]'
+          position === "left" ? "left-[10%]" : "right-[10%]"
         } h-[30vh] w-16 rounded-md ${
-          colors[2] === 'yellow'
-            ? 'bg-yellow-400 shadow-[0_0_15px_5px_rgba(252,211,77,0.6)]'
-            : 'bg-orange-400 shadow-[0_0_15px_5px_rgba(251,146,60,0.6)]'
+          colors[2] === "yellow"
+            ? "bg-yellow-400 shadow-[0_0_15px_5px_rgba(252,211,77,0.6)]"
+            : "bg-orange-400 shadow-[0_0_15px_5px_rgba(251,146,60,0.6)]"
         }`}
       />
       <div
         className={`absolute bottom-[calc(50%-50px)] transform translate-y-1/2 ${
-          position === 'left' ? 'left-[16%]' : 'right-[16%]'
+          position === "left" ? "left-[16%]" : "right-[16%]"
         } h-[40vh] w-16 rounded-md ${
-          colors[3] === 'yellow'
-            ? 'bg-yellow-400 shadow-[0_0_15px_5px_rgba(252,211,77,0.6)]'
-            : 'bg-orange-400 shadow-[0_0_15px_5px_rgba(251,146,60,0.6)]'
+          colors[3] === "yellow"
+            ? "bg-yellow-400 shadow-[0_0_15px_5px_rgba(252,211,77,0.6)]"
+            : "bg-orange-400 shadow-[0_0_15px_5px_rgba(251,146,60,0.6)]"
         }`}
       />
     </>
