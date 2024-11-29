@@ -33,13 +33,13 @@ export default function BidComponent({ category }) {
     if (document.hidden) {
       clearInterval(intervalRef.current); // Stop API calls when the page is hidden
     } else {
-      intervalRef.current = setInterval(fetchPlayer, 2000); // Resume API calls when the page becomes visible
+      intervalRef.current = setInterval(fetchPlayer, 1000); // Resume API calls when the page becomes visible
     }
   };
 
   useEffect(() => {
     // Set up interval initially
-    intervalRef.current = setInterval(fetchPlayer, 2000);
+    intervalRef.current = setInterval(fetchPlayer, 1000);
 
     // Add event listener for page visibility changes
     document.addEventListener("visibilitychange", handleVisibilityChange);
