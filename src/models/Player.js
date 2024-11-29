@@ -1,16 +1,16 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const PlayerSchema = new mongoose.Schema({
   name: { type: String, required: true },
   type: { type: String, required: true },
   battingStyle: { type: String, required: true },
   bowlingStyle: { type: String, required: true },
-  playerType: {
-    type: String,
-    enum: ["male", "female", "faculty"],
-    required: true,
-    default: "male",
-  },
+  // playerType: {
+  //   type: String,
+  //   enum: ["male", "female", "faculty"],
+  //   required: true,
+  //   default: "male",
+  // },
   category: { type: String, required: true },
   image: { type: String, required: true },
   currentPrice: { type: Number, required: true },
@@ -19,4 +19,4 @@ const PlayerSchema = new mongoose.Schema({
   teamName: { type: String, default: null },
 });
 
-export default mongoose.models.Player || mongoose.model("Player", PlayerSchema);
+export default mongoose.models.Player || mongoose.model('Player', PlayerSchema);

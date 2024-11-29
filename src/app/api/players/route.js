@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import { connectToDatabase } from "../../../lib/mongodb";
-import Player from "../../../models/Player";
+import { NextResponse } from 'next/server';
+import { connectToDatabase } from '../../../lib/mongodb';
+import Player from '../../../models/Player';
 
 // POST API to add player (without file upload)
 export async function POST(req) {
@@ -19,7 +19,6 @@ export async function POST(req) {
       category,
       battingStyle,
       bowlingStyle,
-      playerType,
     } = formData;
 
     // Validate the required fields
@@ -31,12 +30,11 @@ export async function POST(req) {
       !category ||
       !type ||
       !battingStyle ||
-      !bowlingStyle ||
-      !playerType
+      !bowlingStyle
     ) {
       return NextResponse.json(
-        { message: "Missing required fields" },
-        { status: 400 }
+        { message: 'Missing required fields' },
+        { status: 400 },
       );
     }
 
@@ -57,13 +55,13 @@ export async function POST(req) {
     const savedPlayer = await newPlayer.save();
 
     return NextResponse.json({
-      message: "Player added successfully",
+      message: 'Player added successfully',
       player: savedPlayer,
     });
   } catch (error) {
     return NextResponse.json(
-      { message: "Internal server error", error: error.message },
-      { status: 500 }
+      { message: 'Internal server error', error: error.message },
+      { status: 500 },
     );
   }
 }
@@ -80,10 +78,10 @@ export async function GET(req) {
     return NextResponse.json(
       {
         success: false,
-        message: "Error fetching players",
+        message: 'Error fetching players',
         error: error.message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -98,8 +96,8 @@ export async function PUT(req) {
 
     if (!player) {
       return NextResponse.json(
-        { success: false, message: "Player not found" },
-        { status: 404 }
+        { success: false, message: 'Player not found' },
+        { status: 404 },
       );
     }
 
@@ -108,17 +106,17 @@ export async function PUT(req) {
 
     return NextResponse.json({
       success: true,
-      message: "Player marked as sold",
+      message: 'Player marked as sold',
       player,
     });
   } catch (error) {
     return NextResponse.json(
       {
         success: false,
-        message: "Error marking player as sold",
+        message: 'Error marking player as sold',
         error: error.message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -133,8 +131,8 @@ export async function PATCH(req) {
 
     if (!player) {
       return NextResponse.json(
-        { success: false, message: "Player not found" },
-        { status: 404 }
+        { success: false, message: 'Player not found' },
+        { status: 404 },
       );
     }
 
@@ -143,17 +141,17 @@ export async function PATCH(req) {
 
     return NextResponse.json({
       success: true,
-      message: "Team name updated",
+      message: 'Team name updated',
       player,
     });
   } catch (error) {
     return NextResponse.json(
       {
         success: false,
-        message: "Error updating team name",
+        message: 'Error updating team name',
         error: error.message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

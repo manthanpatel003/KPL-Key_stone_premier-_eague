@@ -1,51 +1,54 @@
-"use client";
-import axios from "axios";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+'use client';
+import axios from 'axios';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { categoryOrder } from '../../../lib/helper';
 
-export default function AdminPage({ playerType }) {
+export default function AdminPage({ category }) {
   const [player, setPlayer] = useState(null); // Store player details
-  const [selectedTeam, setSelectedTeam] = useState(""); // Track selected team
-  const [count, setCount] = useState(1);
+  const [selectedTeam, setSelectedTeam] = useState(''); // Track selected team
+  const [count, setCount] = useState({ '5Lac': 0, '20Lac': 0, '25Lac': 0 });
   console.log(count);
 
-  if (!playerType) return <>Loading...</>;
+  if (!category) return <>Loading...</>;
 
   // Fetch a player with no teamName on component load
   const fetchPlayer = async () => {
     try {
-      const response = await axios.get("/api/players/" + playerType);
+      const response = await axios.get(
+        '/api/players/' + String(category).toLowerCase(),
+      );
       console.log({ response });
       setPlayer(response.data?.player);
-      setCount(1);
-      setSelectedTeam("");
+      setCount({ '5Lac': 0, '20Lac': 0, '25Lac': 0 });
+      setSelectedTeam('');
     } catch (error) {
-      console.error("Error fetching player:", error.response?.data || error);
+      console.error('Error fetching player:', error.response?.data || error);
     }
   };
+
   useEffect(() => {
     fetchPlayer();
   }, []);
 
   // Handle increasing bid price
-  const handleIncreaseBid = async () => {
+  const handleIncreaseBid = async incCount => {
     if (!player) return;
-    let incCount = count <= 9 ? 100000 : 2500000;
-    toast(count, incCount);
-    const newPrice = player.currentPrice + incCount; // Example bid increment
+    const newPrice = player.currentPrice + incCount * 100000; // Example bid increment
     try {
-      const response = await axios.put("/api/price-update", {
+      const response = await axios.put('/api/price-update', {
         playerId: player._id,
         newPrice,
       });
       setPlayer(response.data.player);
-      setCount((prev) => prev + 1);
+      setCount(prev => {
+        return { ...prev, [`${incCount}Lac`]: prev[`${incCount}Lac`] + 1 };
+      });
     } catch (error) {
       console.error(
-        "Error increasing bid price:",
-        error.response?.data || error
+        'Error increasing bid price:',
+        error.response?.data || error,
       );
     }
   };
@@ -54,14 +57,14 @@ export default function AdminPage({ playerType }) {
   const handleMarkSold = async () => {
     if (!player) return;
     try {
-      const response = await axios.put("/api/players", {
+      const response = await axios.put('/api/players', {
         playerId: player._id,
       });
       setPlayer(response.data.player);
     } catch (error) {
       console.error(
-        "Error marking player as sold:",
-        error.response?.data || error
+        'Error marking player as sold:',
+        error.response?.data || error,
       );
     }
   };
@@ -70,31 +73,28 @@ export default function AdminPage({ playerType }) {
   const handleSetTeam = async () => {
     if (!player || !selectedTeam) return;
     try {
-      const response = await axios.patch("/api/players", {
+      const response = await axios.patch('/api/players', {
         playerId: player._id,
         teamName: selectedTeam,
       });
       setPlayer(response.data.player);
       fetchPlayer();
     } catch (error) {
-      console.error("Error setting team:", error.response?.data || error);
+      console.error('Error setting team:', error.response?.data || error);
     }
   };
   console.log(player);
 
   return (
-    <div className="container mx-auto p-9 !overflow-auto">
+    <div className="container mx-auto p-9 ">
       <div className=" w-full flex flex-col items-center gap-14">
         {!player && (
           <div className="text-xl text-yellow-500 font-extrabold">
-            {playerType === "faculty" && (
-              <Link href={"/admin/male"}>
-                Move to Next Bidding(Male Players)
-              </Link>
-            )}
-            {playerType === "male" && (
-              <Link href={"/admin/female"}>
-                Move to Next Bidding(Female Players)
+            {categoryOrder[category] && (
+              <Link
+                href={`/admin/${String(categoryOrder[category]).toLowerCase()}`}
+              >
+                Move to Next Category ({categoryOrder[category]})
               </Link>
             )}
           </div>
@@ -147,14 +147,14 @@ export default function AdminPage({ playerType }) {
               <div className="flex-[2] relative">
                 <Image
                   className="h-full w-full max-h-full max-w-[300px] object-cover rounded-lg border-4 shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]"
-                  src={player?.image ?? "/players-image/no_user.jpg"}
+                  src={player?.image ?? '/players-image/no_user.jpg'}
                   width={350}
                   height={500}
                 />
                 {player?.isSold ? (
                   <Image
                     className="absolute  bottom-0 left-0 tran transform"
-                    src={"/sold-out.png"}
+                    src={'/sold-out.png'}
                     width={320}
                     height={320}
                   />
@@ -165,32 +165,32 @@ export default function AdminPage({ playerType }) {
               <div className="flex-[3] flex flex-col justify-between ">
                 <div>
                   <h2 className="text-6xl text-center text-white mb-1 ">
-                    {player?.name ?? "---"}
+                    {player?.name ?? '---'}
                   </h2>
                   <hr />
                   <h5 className="mt-2 text-2xl text-center text-white">
-                    {player?.type ?? "---"}
+                    {player?.type ?? '---'}
                   </h5>
                   <h5 className="mt-2 text-2xl text-center text-white">
-                    Batting style : {player?.battingStyle ?? "---"}
+                    Batting style : {player?.battingStyle ?? '---'}
                   </h5>
                   <h5 className="mt-2 text-2xl text-center text-white">
-                    Bowling style : {player?.bowlingStyle ?? "---"}
+                    Bowling style : {player?.bowlingStyle ?? '---'}
                   </h5>
                 </div>
                 <div className="text-2xl">
                   <div className="border-b-2 flex items-center gap-3 py-2">
                     <h3 className="text-yellow-400">CATEGORY :</h3>
-                    <h3 className="text-white">{player?.category ?? "---"}</h3>
+                    <h3 className="text-white">{player?.category ?? '---'}</h3>
                   </div>
                   <div className="border-b-2 flex items-center gap-3 py-2">
                     <h3 className="text-yellow-400">BASE PRICE :</h3>
-                    <h3 className="text-white">{player?.basePrice ?? "---"}</h3>
+                    <h3 className="text-white">{player?.basePrice ?? '---'}</h3>
                   </div>
                   <div className="border-b-2 flex items-center gap-3 py-2">
                     <h3 className="text-yellow-400">CURRENT PRICE:</h3>
                     <h3 className="text-white">
-                      {player?.currentPrice ?? "---"}
+                      {player?.currentPrice ?? '---'}
                     </h3>
                   </div>
                 </div>
@@ -198,19 +198,40 @@ export default function AdminPage({ playerType }) {
             </div>
             {/* Actions */}
             <div className="flex flex-col gap-3 justify-center items-center">
-              <button
-                onClick={handleIncreaseBid}
-                type="button"
-                className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
-                disabled={!player?._id || player?.isSold}
-              >
-                + Increase Bid
-              </button>
+              <div className="flex gap-48">
+                <button
+                  onClick={() => handleIncreaseBid(5)}
+                  type="button"
+                  className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+                  disabled={!player?._id || player?.isSold}
+                >
+                  + 5Lac <br />
+                  (count: {count['5Lac']})
+                </button>
+                <button
+                  onClick={() => handleIncreaseBid(20)}
+                  type="button"
+                  className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+                  disabled={!player?._id || player?.isSold}
+                >
+                  + 20Lac <br />
+                  (count: {count['20Lac']})
+                </button>
+                <button
+                  onClick={() => handleIncreaseBid(25)}
+                  type="button"
+                  className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+                  disabled={!player?._id || player?.isSold}
+                >
+                  + 25Lac <br />
+                  (count: {count['25Lac']})
+                </button>
+              </div>
               <button
                 onClick={() => {
                   if (
                     window.confirm(
-                      "Are you sure you want to mark this item as sold?"
+                      'Are you sure you want to mark this item as sold?',
                     )
                   ) {
                     handleMarkSold();
@@ -236,7 +257,7 @@ export default function AdminPage({ playerType }) {
                     id="team"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     value={selectedTeam}
-                    onChange={(e) => setSelectedTeam(e.target.value)}
+                    onChange={e => setSelectedTeam(e.target.value)}
                   >
                     <option value="" disabled>
                       Choose a team
