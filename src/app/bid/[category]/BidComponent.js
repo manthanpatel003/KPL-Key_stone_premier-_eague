@@ -94,7 +94,7 @@ export default function BidComponent({ category }) {
         />
         <h1 className="bg-blue-950 text-9xl font-extrabold text-yellow-500 p-12 rounded-xl shadow-[rgba(0,_0,_0,_0.4)_50px_50px_40px_-2px] border-1 border-2 border-yellow-500 relative">
           All Players{category && `(${category})`} Sold
-          <div className="absolute right-4 bottom-2 text-lg">
+          <div className="absolute right-4 bottom-2 text-sm text-nowrap">
             {categoryOrder[category] && (
               <Link
                 href={`/bid/${String(categoryOrder[category]).toLowerCase()}`}
