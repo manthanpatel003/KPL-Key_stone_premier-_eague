@@ -259,6 +259,7 @@ export default function AdminPage({ playerType }) {
                       TRESURY TACTICIANS
                     </option>
                     <option value="STOCK STRIKERS">STOCK STRIKERS</option>
+                    <option value="OTHERS">OTHERS</option>
                   </select>
                 </form>
                 <button

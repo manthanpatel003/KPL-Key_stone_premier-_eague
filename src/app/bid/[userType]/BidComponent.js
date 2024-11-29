@@ -170,13 +170,17 @@ export default function BidComponent({ playerType }) {
                 <div className="border-b-2 flex items-center gap-3 py-2">
                   <h3 className="text-yellow-400">BASE PRICE :</h3>
                   <h3 className="text-white">
-                    {player?.player?.basePrice ?? "---"}
+                    {player?.player?.basePrice
+                      ? player?.player?.basePrice + "/-"
+                      : "---"}
                   </h3>
                 </div>
                 <div className="border-b-2 flex items-center gap-3 py-2">
                   <h3 className="text-yellow-400">CURRENT PRICE:</h3>
                   <h3 className="text-white">
-                    {player?.player?.currentPrice ?? "---"}
+                    {player?.player?.currentPrice
+                      ? player?.player?.currentPrice + "/-"
+                      : "---"}
                   </h3>
                 </div>
               </div>
