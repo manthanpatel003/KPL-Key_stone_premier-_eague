@@ -91,10 +91,13 @@ export default function BidComponent({ category }) {
           src={"/kpl_logo.png"}
           width={300}
           height={300}
+          onError={(e) => {
+            e.target.src = "/players-image/no_user.jpg";
+          }}
         />
         <h1 className="bg-blue-950 text-9xl font-extrabold text-yellow-500 p-12 rounded-xl shadow-[rgba(0,_0,_0,_0.4)_50px_50px_40px_-2px] border-1 border-2 border-yellow-500 relative">
           All Players
-          {category && category !== "girls" && `(${category === girls})`} Sold
+          {category && category !== "girls" && `(${category})`} Sold
           <div className="absolute right-4 bottom-2 text-sm text-nowrap">
             {categoryOrder[category] && (
               <Link
@@ -123,11 +126,14 @@ export default function BidComponent({ category }) {
 
           <div className="shadow-[rgba(0,_0,_0,_0.5)_0px_0px_70px_2px] border-4 border-yellow-500 z-50 absolute top-[calc(50%+50px)] left-1/2 transform -translate-x-1/2 -translate-y-1/2   w-[1000px] bg-blue-950 rounded-lg flex gap-5 p-10  ">
             <div className="flex-[2] relative">
-              <Image
+              <img
                 className="h-full w-full max-h-full max-w-[300px] object-cover rounded-lg border-4 shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]"
                 src={player?.player?.image ?? "/players-image/no_user.jpg"}
                 width={350}
                 height={500}
+                onError={(e) => {
+                  e.target.src = "/players-image/no_user.jpg";
+                }}
               />
               {player?.player?.isSold ? (
                 <Image
