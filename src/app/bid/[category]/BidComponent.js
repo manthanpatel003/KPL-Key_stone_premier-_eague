@@ -12,6 +12,30 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 
+function formatRupees(amount) {
+  try {
+    if (isNaN(amount)) {
+      throw new Error("Invalid amount");
+    }
+
+    const [integerPart, decimalPart] = amount.toString().split(".");
+
+    const lastThreeDigits = integerPart.slice(-3);
+    const otherDigits = integerPart.slice(0, -3);
+
+    const formattedInteger =
+      otherDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",") +
+      (otherDigits ? "," : "") +
+      lastThreeDigits;
+
+    return decimalPart
+      ? `₹${formattedInteger}.${decimalPart}/-`
+      : `₹${formattedInteger}/-`;
+  } catch (error) {
+    return amount; // Return the input as-is if there's an error
+  }
+}
+
 export default function BidComponent({ category }) {
   const [player, setPlayer] = useState(null);
   const intervalRef = useRef(null);
@@ -95,7 +119,7 @@ export default function BidComponent({ category }) {
             e.target.src = "/players-image/no_user.jpg";
           }}
         />
-        <h1 className="bg-blue-950 text-9xl font-extrabold text-yellow-500 p-12 rounded-xl shadow-[rgba(0,_0,_0,_0.4)_50px_50px_40px_-2px] border-1 border-2 border-yellow-500 relative">
+        <h1 className="bg-blue-950 text-7xl font-extrabold text-yellow-500 p-12 rounded-xl shadow-[rgba(0,_0,_0,_0.4)_50px_50px_40px_-2px] border-1 border-2 border-yellow-500 relative">
           All Players
           {category && category !== "girls" && `(${category})`} Sold
           <div className="absolute right-4 bottom-2 text-sm text-nowrap">
@@ -179,7 +203,7 @@ export default function BidComponent({ category }) {
                   <h3 className="text-yellow-400">BASE PRICE :</h3>
                   <h3 className="text-white">
                     {player?.player?.basePrice
-                      ? player?.player?.basePrice + "/-"
+                      ? formatRupees(player?.player?.basePrice)
                       : "---"}
                   </h3>
                 </div>
@@ -187,7 +211,7 @@ export default function BidComponent({ category }) {
                   <h3 className="text-yellow-400">CURRENT PRICE:</h3>
                   <h3 className="text-white">
                     {player?.player?.currentPrice
-                      ? player?.player?.currentPrice + "/-"
+                      ? formatRupees(player?.player?.currentPrice)
                       : "---"}
                   </h3>
                 </div>
